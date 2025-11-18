@@ -1,0 +1,63 @@
+---
+import "../styles/admin.css";
+---
+
+<div class="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
+    <header class="bg-gray-800/70 backdrop-blur-md shadow-lg border-b border-gray-700 p-6">
+        <h1 class="text-3xl font-bold tracking-wide">Admin Dashboard</h1>
+    </header>
+
+    <div class="flex flex-1">
+        <aside class="w-64 bg-gray-800/60 backdrop-blur-md border-r border-gray-700 p-4 shadow-xl">
+            <nav class="flex flex-col gap-3">
+                <button 
+                    id="progetti"
+                    class="screen-btn px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-left transition-all duration-200">
+                    Gestione Progetti
+                </button>
+                <button
+                    id="foto"
+                    class="screen-btn px-4 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-left transition-all duration-200">
+                    Gestione Foto
+                </button>
+            </nav>
+        </aside>
+
+        <div class="flex-1 p-6">
+
+            <!-- SCREEN: Gestione Progetti -->
+            <div id="screen-progetti" class="screen hidden bg-gray-800/40 backdrop-blur-md rounded-xl p-6 border border-gray-700">
+                <h2 class="text-2xl font-semibold mb-4">Gestione Progetti</h2>
+                <p class="text-gray-300">Qui puoi gestire i tuoi progetti.</p>
+            </div>
+
+            <!-- SCREEN: Gestione Foto -->
+            <div id="screen-foto" class="screen hidden bg-gray-800/40 backdrop-blur-md rounded-xl p-6 border border-gray-700">
+                <h2 class="text-2xl font-semibold mb-4">Gestione Foto</h2>
+                <p class="text-gray-300">Qui puoi gestire la tua galleria fotografica.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+// --- SCREEN SWITCHING ---
+document.querySelectorAll('.screen-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = btn.id;
+
+        // Nascondi tutte le schermate
+        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+
+        // Mostra la schermata selezionata
+        const screen = document.getElementById(`screen-${target}`)
+        if(screen) screen.classList.remove('hidden');
+
+        // Effetto di highlight sul pulsante attivo
+        document.querySelectorAll('.screen-btn').forEach(b => b.classList.remove('bg-gray-600'));
+        btn.classList.add('bg-gray-600');
+    });
+});
+</script>
+
