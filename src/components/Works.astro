@@ -1,8 +1,8 @@
 ---
 import ProjectCard from "./ProjectCard.astro";
-import { defaultProjects } from "../data/projects";
+import { getProjects } from "../data/projects";
 
-const projects = defaultProjects.map((project) => ({
+const projects = (await getProjects()).map((project) => ({
     ...project,
     image: `/${project.image}`,
 }));
