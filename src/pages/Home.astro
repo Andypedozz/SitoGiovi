@@ -14,7 +14,7 @@ import Works from "../components/Works.astro";
 
 	<!-- Hero -->
 	<Hero />
-
+  
 	<!-- Works -->
 	<Works />
 
@@ -30,3 +30,21 @@ import Works from "../components/Works.astro";
 	<!-- Footer -->
 	<Footer />
 </div>
+
+<script>
+  // Scroll reveal animation
+  const revealElements = document.querySelectorAll('.reveal, .card');
+  
+  const revealOnScroll = () => {
+    revealElements.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const isVisible = rect.top < window.innerHeight * 0.85;
+      if (isVisible) {
+        el.classList.add('visible');
+      }
+    });
+  };
+  
+  window.addEventListener('scroll', revealOnScroll);
+  window.addEventListener('load', revealOnScroll);
+</script>

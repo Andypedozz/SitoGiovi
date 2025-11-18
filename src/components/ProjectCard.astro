@@ -1,17 +1,27 @@
-<article class="h-100 p-4">
-    <div class="h-full relative overflow-hidden text-white p-6 flex flex-col justify-between rounded-3xl">
-        <div></div>
-        <!-- Immagine come sfondo -->
-        <img 
-            src="https://t3.ftcdn.net/jpg/01/20/28/24/360_F_120282465_htIcYKYiSb98hIrhL6X6ilI0z8vn19LY.jpg"
-            alt=""
-            class="absolute inset-0 w-full h-full object-cover -z-10"
-        >
+---
+const { project } = Astro.props;
+---
 
-        <!-- Contenuto -->
-        <div>
-            <h3 class="text-xl font-semibold">Pianca – Armonie</h3>
-            <span>View →</span>
-        </div>
+<article
+    class="relative bg-[#141414] rounded-[20px] overflow-hidden h-[450px] opacity-0 translate-y-[60px] transition-all duration-500 border border-white/5 hover:-translate-y-4 hover:scale-[1.02] hover:shadow-[0_30px_80px_rgba(0,0,0,0.6),0_0_40px_rgba(99,102,241,0.2)] hover:border-[#6366f1]/30 before:content-[''] before:absolute before:inset-0 before:bg-linear-to-br before:from-[rgba(99,102,241,0.2)] before:to-transparent before:opacity-0 before:transition-opacity before:duration-500 before:z-1 hover:before:opacity-100 card"
+>
+    <img
+        class="absolute inset-0 w-full h-full object-cover brightness-[0.8] saturate-[1.1] transition-all duration-800 hover:scale-[1.15] hover:brightness-[0.6] hover:saturate-[1.3]"
+        src={project.image}
+        alt="Project"
+    />
+    <div
+        class="absolute bottom-0 left-0 right-0 p-8 z-2 bg-linear-to-t from-black/90 to-transparent translate-y-5 transition-transform duration-500 hover:translate-y-0"
+    >
+        <h3
+            class="text-[1.7rem] font-extrabold mb-2 tracking-[-0.01em] drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
+        >
+            {project.title}
+        </h3>
+        <span
+            class="text-base text-white font-semibold inline-flex items-center gap-2 transition-all duration-300 hover:gap-3.5"
+        >
+            View →
+        </span>
     </div>
 </article>

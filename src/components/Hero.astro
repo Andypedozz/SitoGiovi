@@ -1,15 +1,47 @@
-<!-- Hero -->
-<section class="text-center bg-[#0f0b1c] p-20">
-    <div></div>
-    <div></div>
-    <div>
-        <h1 class="text-5xl font-bold">
-            Where <span class="text-[#1b7dec]">Creativity</span> meets <span class="text-[#1b7dec]">Emotion</span>
+<section
+    class="relative h-screen flex items-center justify-center text-center overflow-hidden bg-linear-to-br from-[#0a0a0a] to-[#1a1a2e]"
+>
+    <!-- Background Image -->
+    <div
+        class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1526312426976-593c2ae4b7a7?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-30 animate-[slowZoom_30s_ease-in-out_infinite_alternate]"
+    >
+    </div>
+
+    <!-- Overlay -->
+    <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(99,102,241,0.1)_0%,rgba(0,0,0,0.9)_100%)] z-1"
+    >
+    </div>
+
+    <!-- Particles Container -->
+    <div class="absolute inset-0 z-1 overflow-hidden" id="particles"></div>
+
+    <!-- Content -->
+    <div
+        class="container max-w-[1400px] mx-auto px-6 relative z-2 text-[#f5f5f5] opacity-0 animate-[fadeUpScale_1.4s_cubic-bezier(0.16,1,0.3,1)_forwards]"
+    >
+        <h1
+            class="text-[clamp(2.8rem,7vw,6rem)] font-black leading-[1.1] mb-6 tracking-[-0.03em]"
+        >
+            Where <span
+                class="bg-linear-to-br from-white via-[#6366f1] to-white bg-size-[200%_200%] bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite] inline-block relative after:content-[''] after:absolute after:-bottom-2 after:left-0 after:right-0 after:h-[3px] after:bg-linear-to-r after:from-transparent after:via-[#6366f1] after:to-transparent after:animate-[glow_2s_ease_infinite]"
+                >Creativity</span
+            > meets <span
+                class="bg-linear-to-br from-white via-[#6366f1] to-white bg-size-[200%_200%] bg-clip-text text-transparent animate-[gradientShift_4s_ease_infinite] inline-block relative after:content-[''] after:absolute after:-bottom-2 after:left-0 after:right-0 after:h-[3px] after:bg-linear-to-r after:from-transparent after:via-[#6366f1] after:to-transparent after:animate-[glow_2s_ease_infinite]"
+                >Emotion</span
+            >
         </h1>
-        <p>
-            We design, film, and tell stories that connect brands with people –
+        <p
+            class="text-[#a0a0a0] text-xl leading-[1.7] mb-12 font-normal max-w-[700px] mx-auto"
+        >
+            We design, film, and tell stories that connect brands with people —
             through visuals that move hearts.
         </p>
-        <a>↓ Explore our world</a>
+        <a
+            href="#work"
+            class="text-white no-underline font-semibold text-base tracking-[0.15em] transition-all duration-400 inline-flex items-center gap-2 animate-[bounce_2s_ease_infinite] hover:translate-y-1 hover:opacity-70"
+        >
+            ↓ Explore our world
+        </a>
     </div>
 </section>
