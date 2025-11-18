@@ -1,0 +1,53 @@
+<div class="bg-gray-50 border border-gray-300 p-6 rounded-lg shadow-lg">
+    <h3 class="text-xl font-semibold mb-4 text-gray-700">Aggiungi progetto</h3>
+
+    <div class="space-y-4">
+        <form id="projectForm" class="flex flex-col space-y-4">
+
+            <div>
+                <label for="titolo" class="block text-sm font-medium text-gray-600 mb-1">Titolo</label>
+                <input type="text" id="titolo" class="text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500">
+            </div>
+
+            <div>
+                <label for="descrizione" class="block text-sm font-medium text-gray-600 mb-1">Descrizione</label>
+                <textarea id="descrizione" rows="4" class="text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 resize-none"></textarea>
+            </div>
+
+            <button type="submit" class="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-150 ease-in-out font-medium">
+                Salva Progetto
+            </button>
+        </form>
+    </div>
+
+    <script is:inline>
+        async function addProject(title, description) {
+            console.log("Invio body:", { title, description });
+
+            const response = await fetch('/api/projects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ title, description })
+            });
+
+            const result = await response.json();
+            console.log("Risposta API:", result);
+            return result;
+        }
+
+        document.getElementById("projectForm").addEventListener("submit", async (event) => {
+            event.preventDefault(); // BLOCCA refresh
+            event.stopPropagation(); // BLOCCA eventuali listener duplicati
+
+            const title = document.getElementById("titolo").value;
+            const description = document.getElementById("descrizione").value;
+
+            await addProject(title, description);
+
+            // reset dopo invio
+            event.target.reset();
+        });
+    </script>
+</div>

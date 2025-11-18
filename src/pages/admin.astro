@@ -1,48 +1,55 @@
 ---
-import AdminButton from "../components/AdminButton.astro";
-import ManagePhotos from "../components/ManagePhotos.astro";
-import ManageProjects from "../components/ManageProjects.astro";
 import "../styles/admin.css";
+import AdminButton from "../components/Admin/AdminButton.astro";
+import ManagePhotos from "../components/Admin/ManagePhotos.astro";
+import ManageProjects from "../components/Admin/ManageProjects.astro";
+import Layout from "../layouts/Layout.astro";
 ---
 
-<div class="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
-    <header class="bg-gray-800/70 backdrop-blur-md shadow-lg border-b border-gray-700 p-6">
-        <h1 class="text-3xl font-bold tracking-wide">Admin Dashboard</h1>
-    </header>
-
-    <div class="flex flex-1">
-        <aside class="w-64 bg-gray-800/60 backdrop-blur-md border-r border-gray-700 p-4 shadow-xl">
-            <nav class="flex flex-col gap-3">
-                <AdminButton id={"progetti"} text={"Gestione Progetti"}/>
-                <AdminButton id={"foto"} text={"Gestione Foto"}/>
-            </nav>
-        </aside>
-
-        <div class="flex-1 p-6">
-
-            <!-- SCREEN: Gestione Progetti -->
-            <ManageProjects />
-
-            <!-- SCREEN: Gestione Foto -->
-            <ManagePhotos />
-
+<Layout>
+    <div class="min-h-screen bg-gray-900 text-gray-100 flex flex-col">
+        <header
+            class="bg-gray-800/70 flex justify-between items-center backdrop-blur-md shadow-lg border-b border-gray-700 p-6"
+        >
+            <h1 class="text-3xl font-bold tracking-wide">Admin Dashboard</h1>
+            <a href="/" class="text-lg font-bold">Home</a>
+        </header>
+    
+        <div class="flex flex-1">
+            <aside
+                class="w-64 bg-gray-800/60 backdrop-blur-md border-r border-gray-700 p-4 shadow-xl"
+            >
+                <nav class="flex flex-col gap-3">
+                    <AdminButton id={"progetti"} text={"Gestione Progetti"} />
+                    <AdminButton id={"foto"} text={"Gestione Foto"} />
+                </nav>
+            </aside>
+    
+            <div id="page-container" class="flex-1 p-6">
+                <!-- SCREEN: Gestione Progetti -->
+                <ManageProjects />
+    
+                <!-- SCREEN: Gestione Foto -->
+                <ManagePhotos />
+            </div>
         </div>
     </div>
-</div>
-
-<script>
-// --- SCREEN SWITCHING ---
-document.querySelectorAll('.screen-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const target = btn.id;
-
-        // Nascondi tutte le schermate
-        document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-
-        // Mostra la schermata selezionata
-        const screen = document.getElementById(`screen-${target}`)
-        if(screen) screen.classList.remove('hidden');
-    });
-});
-</script>
-
+    
+    <script>
+        // --- SCREEN SWITCHING ---
+        document.querySelectorAll(".screen-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const target = btn.id;
+    
+                // Nascondi tutte le schermate
+                document
+                    .querySelectorAll(".screen")
+                    .forEach((s) => s.classList.add("hidden"));
+    
+                // Mostra la schermata selezionata
+                const screen = document.getElementById(`screen-${target}`);
+                if (screen) screen.classList.remove("hidden");
+            });
+        });
+    </script>
+</Layout>

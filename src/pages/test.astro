@@ -1,0 +1,24 @@
+<div>
+    <button id="submit">Send</button>
+</div>
+
+<script is:inline>
+    document.getElementById("submit").addEventListener("click", () => {
+        test();
+    });
+
+    async function test() {
+        const res = await fetch("/api/test", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                message: "Testo di prova"
+            })
+        });
+
+        const json = await res.json();
+        alert(json.message);
+    }
+</script>

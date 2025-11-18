@@ -1,0 +1,25 @@
+---
+import DataTable from "../DataTable.astro";
+import AddProject from "./AddProject.astro";
+import EditProject from "./EditProject.astro";
+import RemoveProject from "./RemoveProject.astro";
+import projects from "../../data/projects.json"
+
+const columns = ["ID", "Titolo", "Descrizione"];
+
+---
+
+<div id="screen-progetti" class="screen p-6 bg-white min-h-screen rounded-2xl">
+    <header class="mb-8 border-b pb-4 border-gray-200">
+        <h2 class="text-3xl font-bold text-gray-800">Gestione Progetti</h2>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <AddProject />
+        <EditProject projects={projects}/>
+        <RemoveProject projects={projects}/>
+    </div>
+    <div class="my-10">
+        <DataTable data={projects} columns={columns}/>
+    </div>
+</div>

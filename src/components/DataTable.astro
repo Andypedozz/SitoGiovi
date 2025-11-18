@@ -1,0 +1,35 @@
+---
+const { data, columns: passedColumns } = Astro.props;
+
+const columns =
+    Array.isArray(passedColumns) && passedColumns.length > 0
+        ? passedColumns
+        : (Array.isArray(data) && data.length > 0
+            ? Object.keys(data[0])
+            : []);
+---
+<table class="w-full border border-gray-300 rounded-lg overflow-hidden text-lg">
+    <thead class="bg-gray-700 text-white text-xl">
+        <tr class="h-14">
+            {columns.map(field => (
+                <th class="px-6 py-3 text-left font-semibold border-b border-gray-600">
+                    {field}
+                </th>
+            ))}
+        </tr>
+    </thead>
+
+    <tbody class="text-gray-800">
+        {Array.isArray(data) &&
+            data.map(row => (
+                <tr class="odd:bg-gray-100 even:bg-gray-200 hover:bg-gray-300 transition-colors h-14">
+                    {Object.keys(row).map(key => (
+                        <td class="px-6 py-3 border-b border-gray-300">
+                            {row[key]}
+                        </td>
+                    ))}
+                </tr>
+            ))
+        }
+    </tbody>
+</table>
