@@ -1,12 +1,11 @@
 ---
 import ProjectCard from "./ProjectCard.astro";
+import { defaultProjects } from "../data/projects";
 
-const projects = [
-    { title: "Robys", image: "images/robys.jpg" },
-    { title: "Si Lo So", image: "images/siloso.jpg" },
-    { title: "Opia SS25", image: "images/opia.jpg" },
-    { title: "Supermoto", image: "images/supermoto.jpg" },
-];
+const projects = defaultProjects.map((project) => ({
+    ...project,
+    image: `/${project.image}`,
+}));
 ---
 
 <section
