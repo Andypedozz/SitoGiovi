@@ -1,8 +1,9 @@
 ---
-import { defaultProjects } from "../data/projects";
+import { getProjects } from "../data/projects";
 
-const projects = defaultProjects.map(({ id, title }) => ({ id, name: title }));
-const photos = defaultProjects.map((project, index) => ({
+const loadedProjects = await getProjects();
+const projects = loadedProjects.map(({ id, title }) => ({ id, name: title }));
+const photos = loadedProjects.map((project, index) => ({
     id: index + 1,
     title: project.title,
     description: project.description,

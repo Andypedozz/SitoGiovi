@@ -1,7 +1,7 @@
 ---
-import { defaultProjects } from "../data/projects";
+import { getProjects } from "../data/projects";
 
-const initialProjects = defaultProjects;
+const initialProjects = await getProjects();
 const serializedProjects = JSON.stringify(initialProjects);
 ---
 
@@ -284,6 +284,8 @@ const serializedProjects = JSON.stringify(initialProjects);
     const editDescription = document.getElementById('edit-description');
     const editImage = document.getElementById('edit-image');
 
+    const API_ENDPOINT = '/api/projects.json';
+
     /** @type {Array<{id:string,title:string,description:string,image:string}>} */
     let projects = [];
 
@@ -293,6 +295,25 @@ const serializedProjects = JSON.stringify(initialProjects);
         console.error(error);
         projects = [];
     }
+
+    const requestProjects = async (method = 'GET', payload) => {
+        const init = { method };
+        if (payload) {
+            init.headers = { 'Content-Type': 'application/json' };
+            init.body = JSON.stringify(payload);
+        }
+        const response = await fetch(API_ENDPOINT, init);
+        let data = {};
+        try {
+            data = await response.json();
+        } catch (error) {
+            console.error(error);
+        }
+        if (!response.ok) {
+            throw new Error(data?.message || 'Operazione non riuscita, riprova.');
+        }
+        return Array.isArray(data?.projects) ? data.projects : [];
+    };
 
     const showFeedback = (message, type = 'success') => {
         if (!feedback) return;
@@ -389,14 +410,14 @@ const serializedProjects = JSON.stringify(initialProjects);
         if (editImage) editImage.value = project.image;
     };
 
-    addForm?.addEventListener('submit', (event) => {
+    addForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
         resetFeedback();
         const newProject = {
-            id: addIdInput?.value.trim() || '',
-            title: addTitleInput?.value.trim() || '',
-            description: addDescriptionInput?.value.trim() || '',
-            image: addImageInput?.value.trim() || '',
+            id: addIdInput?.value?.trim() || '',
+            title: addTitleInput?.value?.trim() || '',
+            description: addDescriptionInput?.value?.trim() || '',
+            image: addImageInput?.value?.trim() || '',
         };
 
         if (!newProject.id || !newProject.title || !newProject.description || !newProject.image) {
@@ -404,16 +425,17 @@ const serializedProjects = JSON.stringify(initialProjects);
             return;
         }
 
-        if (findProject(newProject.id)) {
-            showFeedback('Esiste già un progetto con questo slug.', 'error');
-            return;
+        try {
+            const updatedProjects = await requestProjects('POST', newProject);
+            projects = updatedProjects;
+            addForm.reset();
+            renderProjects();
+            renderSelectOptions();
+            showFeedback('Progetto aggiunto correttamente.');
+        } catch (error) {
+            console.error(error);
+            showFeedback(error.message || 'Errore durante il salvataggio.', 'error');
         }
-
-        projects = [newProject, ...projects];
-        addForm.reset();
-        renderProjects();
-        renderSelectOptions();
-        showFeedback('Progetto aggiunto correttamente.');
     });
 
     editSelect?.addEventListener('change', (event) => {
@@ -428,7 +450,7 @@ const serializedProjects = JSON.stringify(initialProjects);
         fillEditForm(project);
     });
 
-    editForm?.addEventListener('submit', (event) => {
+    editForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
         resetFeedback();
         const projectId = editSelect?.value;
@@ -442,16 +464,27 @@ const serializedProjects = JSON.stringify(initialProjects);
             return;
         }
 
-        project.title = editTitle?.value.trim() || project.title;
-        project.description = editDescription?.value.trim() || project.description;
-        project.image = editImage?.value.trim() || project.image;
+        const payload = { id: projectId };
+        const nextTitle = editTitle?.value?.trim();
+        const nextDescription = editDescription?.value?.trim();
+        const nextImage = editImage?.value?.trim();
+        if (nextTitle) payload.title = nextTitle;
+        if (nextDescription) payload.description = nextDescription;
+        if (nextImage) payload.image = nextImage;
 
-        renderProjects();
-        renderSelectOptions();
-        showFeedback('Progetto aggiornato.');
+        try {
+            const updatedProjects = await requestProjects('PUT', payload);
+            projects = updatedProjects;
+            renderProjects();
+            renderSelectOptions();
+            showFeedback('Progetto aggiornato.');
+        } catch (error) {
+            console.error(error);
+            showFeedback(error.message || 'Errore durante l\'aggiornamento.', 'error');
+        }
     });
 
-    deleteForm?.addEventListener('submit', (event) => {
+    deleteForm?.addEventListener('submit', async (event) => {
         event.preventDefault();
         resetFeedback();
         const projectId = deleteSelect?.value;
@@ -459,13 +492,19 @@ const serializedProjects = JSON.stringify(initialProjects);
             showFeedback('Scegli un progetto da eliminare.', 'error');
             return;
         }
-        projects = projects.filter((project) => project.id !== projectId);
-        renderProjects();
-        renderSelectOptions();
-        showFeedback('Progetto eliminato.');
+        try {
+            const updatedProjects = await requestProjects('DELETE', { id: projectId });
+            projects = updatedProjects;
+            renderProjects();
+            renderSelectOptions();
+            showFeedback('Progetto eliminato.');
+        } catch (error) {
+            console.error(error);
+            showFeedback(error.message || 'Errore durante l\'eliminazione.', 'error');
+        }
     });
 
-    projectsList?.addEventListener('click', (event) => {
+    projectsList?.addEventListener('click', async (event) => {
         const target = event.target;
         if (!(target instanceof HTMLElement)) return;
         const actionButton = target.closest('[data-action]');
@@ -486,10 +525,16 @@ const serializedProjects = JSON.stringify(initialProjects);
         }
 
         if (actionButton.dataset.action === 'quick-delete') {
-            projects = projects.filter((project) => project.id !== projectId);
-            renderProjects();
-            renderSelectOptions();
-            showFeedback('Progetto eliminato.', 'success');
+            try {
+                const updatedProjects = await requestProjects('DELETE', { id: projectId });
+                projects = updatedProjects;
+                renderProjects();
+                renderSelectOptions();
+                showFeedback('Progetto eliminato.', 'success');
+            } catch (error) {
+                console.error(error);
+                showFeedback(error.message || 'Impossibile eliminare il progetto.', 'error');
+            }
         }
     });
 
