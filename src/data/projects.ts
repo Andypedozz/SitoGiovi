@@ -1,0 +1,39 @@
+export type AdminProject = {
+    id: string;
+    title: string;
+    description: string;
+    image: string;
+};
+
+export const defaultProjects: AdminProject[] = [
+    {
+        id: "robys",
+        title: "Robys",
+        description: "Restyling della boutique con palette neutra e accenti metallici per valorizzare le collezioni.",
+        image: "images/robys.jpg",
+    },
+    {
+        id: "si-lo-so",
+        title: "Si Lo So",
+        description: "Open space residenziale dal mood vellutato, illuminato da tagli di luce architettonici.",
+        image: "images/siloso.jpg",
+    },
+    {
+        id: "opia-ss25",
+        title: "Opia SS25",
+        description: "Installazione effimera per la presentazione della nuova capsule primavera/estate.",
+        image: "images/opia.jpg",
+    },
+    {
+        id: "supermoto",
+        title: "Supermoto",
+        description: "Garage e club house dedicati ai motori con superfici materiche e grafiche personalizzate.",
+        image: "images/supermoto.jpg",
+    },
+    {
+        id: "neon-pic",
+        title: "Neon Pic",
+        description: "Set fotografico immersivo con neon programmabili per shooting di prodotto dinamici.",
+        image: "images/pic.avif",
+    },
+];

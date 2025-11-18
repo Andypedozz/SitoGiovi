@@ -1,58 +1,498 @@
 ---
-import Button from "./Button.astro";
+import { defaultProjects } from "../data/projects";
 
+const initialProjects = defaultProjects;
+const serializedProjects = JSON.stringify(initialProjects);
 ---
 
-<div id="screen-progetti" class="screen p-6 bg-white min-h-screen rounded-2xl">
-    <header class="mb-8 border-b pb-4 border-gray-200">
-        <h2 class="text-3xl font-bold text-gray-800">Gestione Progetti</h2>
+<div id="screen-progetti" class="screen p-6 bg-white min-h-screen rounded-2xl border border-gray-200 shadow-xl space-y-10">
+    <header class="border-b pb-4 border-gray-200">
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500">Studio</p>
+        <h2 class="text-3xl font-bold text-gray-900">Gestione Progetti</h2>
+        <p class="text-sm text-gray-500 max-w-3xl mt-2">
+            Le immagini vengono lette direttamente da <code class="bg-gray-100 px-1 rounded text-xs">/public/images</code>. Usa i form
+            per aggiungere nuovi progetti o aggiornare quelli esistenti: le modifiche vengono riflesse in tempo reale sulla lista
+            di destra.
+        </p>
     </header>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div id="project-feedback" class="hidden rounded-lg border px-4 py-3 text-sm font-medium"></div>
 
-        <div class="bg-gray-50 border border-gray-300 p-6 rounded-lg shadow-lg">
-            <h3 class="text-xl font-semibold mb-4 text-gray-700">Aggiungi progetto</h3>
-            <div class="space-y-4">
-                <form action="#" class="flex flex-col space-y-4">
-                    
-                    <div>
-                        <label for="titolo" class="block text-sm font-medium text-gray-600 mb-1">Titolo</label>
-                        <input type="text" id="titolo" class="text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500">
-                    </div>
-
-                    <div>
-                        <label for="descrizione" class="block text-sm font-medium text-gray-600 mb-1">Descrizione</label>
-                        <textarea name="descrizione" id="descrizione" rows="4" class="text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 resize-none"></textarea>
-                    </div>
-
-                    <button type="submit" class="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-150 ease-in-out font-medium">Salva Progetto</button>
-                </form>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <section class="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm space-y-4">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-900">Aggiungi progetto</h3>
+                <p class="text-sm text-gray-500">Compila tutti i campi; lo slug deve essere univoco.</p>
             </div>
-        </div>
+            <form id="add-project-form" class="space-y-4">
+                <div>
+                    <label for="add-id" class="block text-sm font-medium text-gray-600">Slug</label>
+                    <input id="add-id" name="add-id" type="text" required placeholder="es. supermoto" class="form-input" />
+                </div>
+                <div>
+                    <label for="add-title" class="block text-sm font-medium text-gray-600">Titolo</label>
+                    <input id="add-title" name="add-title" type="text" required placeholder="Titolo progetto" class="form-input" />
+                </div>
+                <div>
+                    <label for="add-description" class="block text-sm font-medium text-gray-600">Descrizione</label>
+                    <textarea
+                        id="add-description"
+                        name="add-description"
+                        rows="3"
+                        required
+                        class="form-textarea"
+                        placeholder="Racconta il progetto..."
+                    ></textarea>
+                </div>
+                <div>
+                    <label for="add-image" class="block text-sm font-medium text-gray-600">Immagine</label>
+                    <input id="add-image" name="add-image" type="text" required class="form-input" placeholder="images/robys.jpg" />
+                    <p class="text-xs text-gray-500 mt-1">Inserisci il percorso relativo a <code>/public</code>.</p>
+                </div>
+                <button type="submit" class="btn-primary w-full">Salva progetto</button>
+            </form>
+        </section>
 
-        <div class="bg-gray-50 border border-gray-300 p-6 rounded-lg shadow-lg">
-            <h3 class="text-xl font-semibold mb-4 text-gray-700">Modifica progetto</h3>
-            <div class="space-y-4">
-                <form action="#" class="flex flex-col space-y-4">
-                    
-                    <div>
-                        <label for="titolo" class="block text-sm font-medium text-gray-600 mb-1">Titolo</label>
-                        <input type="text" id="titolo" class="text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500">
-                    </div>
-
-                    <div>
-                        <label for="descrizione" class="block text-sm font-medium text-gray-600 mb-1">Descrizione</label>
-                        <textarea name="descrizione" id="descrizione" rows="4" class="text-gray-800 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-500 resize-none"></textarea>
-                    </div>
-
-                    <button type="submit" class="bg-gray-700 text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-150 ease-in-out font-medium">Salva Progetto</button>
-                </form>
+        <section class="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm space-y-4">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-900">Modifica progetto</h3>
+                <p class="text-sm text-gray-500">Seleziona un progetto per caricarlo nel form.</p>
             </div>
-        </div>
+            <form id="edit-project-form" class="space-y-4">
+                <div>
+                    <label for="edit-project" class="block text-sm font-medium text-gray-600">Seleziona progetto</label>
+                    <select id="edit-project" name="edit-project" required class="form-input bg-white">
+                        <option value="" selected>---</option>
+                        {initialProjects.map((project) => (
+                            <option value={project.id}>{project.title}</option>
+                        ))}
+                    </select>
+                </div>
+                <div>
+                    <label for="edit-title" class="block text-sm font-medium text-gray-600">Titolo</label>
+                    <input id="edit-title" type="text" class="form-input" placeholder="Titolo progetto" />
+                </div>
+                <div>
+                    <label for="edit-description" class="block text-sm font-medium text-gray-600">Descrizione</label>
+                    <textarea id="edit-description" rows="3" class="form-textarea" placeholder="Descrizione aggiornata"></textarea>
+                </div>
+                <div>
+                    <label for="edit-image" class="block text-sm font-medium text-gray-600">Immagine</label>
+                    <input id="edit-image" type="text" class="form-input" placeholder="images/robys.jpg" />
+                </div>
+                <button type="submit" class="btn-primary w-full">Aggiorna progetto</button>
+            </form>
+        </section>
 
-        <div class="bg-white border border-gray-300 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
-            <h3 class="text-xl font-semibold text-gray-700">Elimina progetto</h3>
-            <p class="mt-2 text-gray-500">Funzionalità per rimuovere definitivamente un progetto dal sistema.</p>
-        </div>
+        <section class="bg-gray-50 border border-gray-200 p-6 rounded-xl shadow-sm space-y-4">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-900">Elimina progetto</h3>
+                <p class="text-sm text-gray-500">L'elemento verrà rimosso dalla lista corrente.</p>
+            </div>
+            <form id="delete-project-form" class="space-y-4">
+                <div>
+                    <label for="delete-project" class="block text-sm font-medium text-gray-600">Seleziona progetto</label>
+                    <select id="delete-project" name="delete-project" required class="form-input bg-white">
+                        <option value="" selected>---</option>
+                        {initialProjects.map((project) => (
+                            <option value={project.id}>{project.title}</option>
+                        ))}
+                    </select>
+                </div>
+                <button type="submit" class="btn-danger w-full">Elimina</button>
+            </form>
+        </section>
     </div>
+
+    <section class="bg-gray-50 border border-gray-200 rounded-2xl p-6 shadow-inner">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-[0.3em] text-gray-500">Portfolio</p>
+                <h3 class="text-2xl font-semibold text-gray-900">Progetti attivi</h3>
+            </div>
+            <span class="text-sm text-gray-500" id="projects-counter">{initialProjects.length} elementi</span>
+        </div>
+        <div id="projects-list" class="mt-6 grid gap-4 sm:grid-cols-2">
+            {initialProjects.map((project) => (
+                <article class="project-card" data-project-id={project.id}>
+                    <div class="project-card__media">
+                        <img src={`/${project.image}`} alt={project.title} loading="lazy" />
+                    </div>
+                    <div class="project-card__body">
+                        <p class="project-card__slug text-xs uppercase tracking-[0.2em] text-gray-500">{project.id}</p>
+                        <h4 class="text-xl font-semibold text-gray-900">{project.title}</h4>
+                        <p class="project-card__description text-sm text-gray-600">{project.description}</p>
+                        <div class="flex flex-wrap gap-3 pt-3 text-xs font-semibold text-gray-500">
+                            <button type="button" class="text-indigo-600 hover:text-indigo-800" data-action="prefill" data-project-id={project.id}>
+                                Carica per modifica
+                            </button>
+                            <span aria-hidden="true">•</span>
+                            <button type="button" class="text-red-500 hover:text-red-700" data-action="quick-delete" data-project-id={project.id}>
+                                Elimina
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            ))}
+        </div>
+    </section>
+
+    <template id="project-card-template">
+        <article class="project-card" data-project-id="">
+            <div class="project-card__media">
+                <img src="" alt="" loading="lazy" />
+            </div>
+            <div class="project-card__body">
+                <p class="project-card__slug text-xs uppercase tracking-[0.2em] text-gray-500"></p>
+                <h4 class="text-xl font-semibold text-gray-900"></h4>
+                <p class="project-card__description text-sm text-gray-600"></p>
+                <div class="flex flex-wrap gap-3 pt-3 text-xs font-semibold text-gray-500">
+                    <button type="button" class="text-indigo-600 hover:text-indigo-800" data-action="prefill" data-project-id="">
+                        Carica per modifica
+                    </button>
+                    <span aria-hidden="true">•</span>
+                    <button type="button" class="text-red-500 hover:text-red-700" data-action="quick-delete" data-project-id="">
+                        Elimina
+                    </button>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <script type="application/json" id="project-data">{serializedProjects}</script>
 </div>
+
+<style>
+    .form-input,
+    .form-textarea {
+        width: 100%;
+        border-radius: 0.5rem;
+        border: 1px solid #d1d5db;
+        padding: 0.5rem 0.75rem;
+        color: #111827;
+        background-color: #fff;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+        border-color: #111827;
+        box-shadow: 0 0 0 2px rgba(17, 24, 39, 0.15);
+        outline: none;
+    }
+
+    .form-textarea {
+        padding-top: 0.75rem;
+        min-height: 120px;
+        resize: none;
+    }
+
+    .btn-primary,
+    .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #fff;
+        transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #111827;
+    }
+
+    .btn-primary:hover {
+        background-color: #000;
+    }
+
+    .btn-danger {
+        background-color: #dc2626;
+    }
+
+    .btn-danger:hover {
+        background-color: #b91c1c;
+    }
+
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: 1.25rem;
+        border: 1px solid #e5e7eb;
+        background-color: #fff;
+        box-shadow: 0 5px 30px rgba(15, 23, 42, 0.07);
+    }
+
+    @media (min-width: 1024px) {
+        .project-card {
+            flex-direction: row;
+        }
+    }
+
+    .project-card__media {
+        width: 100%;
+        height: 12rem;
+        overflow: hidden;
+    }
+
+    @media (min-width: 1024px) {
+        .project-card__media {
+            width: 12rem;
+            height: auto;
+        }
+    }
+
+    .project-card__media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .project-card__body {
+        flex: 1;
+        padding: 1rem;
+    }
+</style>
+
+<script>
+    const dataElement = document.getElementById('project-data');
+    if (!dataElement) {
+        throw new Error('Impossibile inizializzare i progetti.');
+    }
+
+    const projectsList = document.getElementById('projects-list');
+    const projectsCounter = document.getElementById('projects-counter');
+    const template = document.getElementById('project-card-template');
+    const feedback = document.getElementById('project-feedback');
+
+    const addForm = document.getElementById('add-project-form');
+    const editForm = document.getElementById('edit-project-form');
+    const deleteForm = document.getElementById('delete-project-form');
+
+    const editSelect = document.getElementById('edit-project');
+    const deleteSelect = document.getElementById('delete-project');
+
+    const addIdInput = document.getElementById('add-id');
+    const addTitleInput = document.getElementById('add-title');
+    const addDescriptionInput = document.getElementById('add-description');
+    const addImageInput = document.getElementById('add-image');
+
+    const editTitle = document.getElementById('edit-title');
+    const editDescription = document.getElementById('edit-description');
+    const editImage = document.getElementById('edit-image');
+
+    /** @type {Array<{id:string,title:string,description:string,image:string}>} */
+    let projects = [];
+
+    try {
+        projects = JSON.parse(dataElement.textContent || '[]');
+    } catch (error) {
+        console.error(error);
+        projects = [];
+    }
+
+    const showFeedback = (message, type = 'success') => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        feedback.classList.remove('hidden', 'bg-red-50', 'text-red-700', 'border-red-200', 'bg-green-50', 'text-green-700', 'border-green-200');
+        const palette = type === 'success'
+            ? ['bg-green-50', 'text-green-700', 'border-green-200']
+            : ['bg-red-50', 'text-red-700', 'border-red-200'];
+        feedback.classList.add(...palette);
+    };
+
+    const resetFeedback = () => {
+        if (!feedback) return;
+        feedback.classList.add('hidden');
+        feedback.textContent = '';
+    };
+
+    const findProject = (id) => projects.find((project) => project.id === id);
+
+    const renderProjects = () => {
+        if (!projectsList || !template) return;
+        projectsList.innerHTML = '';
+
+        if (!projects.length) {
+            projectsList.innerHTML = '<p class="text-sm text-gray-500">Non ci sono progetti salvati.</p>';
+        }
+
+        projects.forEach((project) => {
+            const node = template.content.cloneNode(true);
+            const article = node.querySelector('article');
+            const media = node.querySelector('img');
+            const slug = node.querySelector('.project-card__slug');
+            const title = node.querySelector('h4');
+            const desc = node.querySelector('.project-card__description');
+            const actions = node.querySelectorAll('[data-action]');
+
+            if (article) {
+                article.dataset.projectId = project.id;
+            }
+            if (media) {
+                media.src = `/${project.image}`;
+                media.alt = project.title;
+            }
+            if (slug) {
+                slug.textContent = project.id;
+            }
+            if (title) {
+                title.textContent = project.title;
+            }
+            if (desc) {
+                desc.textContent = project.description;
+            }
+            actions.forEach((btn) => {
+                btn.dataset.projectId = project.id;
+            });
+
+            projectsList.appendChild(node);
+        });
+
+        if (projectsCounter) {
+            projectsCounter.textContent = `${projects.length} ${projects.length === 1 ? 'elemento' : 'elementi'}`;
+        }
+    };
+
+    const renderSelectOptions = () => {
+        const optionMarkup = projects
+            .map((project) => `<option value="${project.id}">${project.title}</option>`)
+            .join('');
+
+        if (editSelect) {
+            const current = editSelect.value;
+            editSelect.innerHTML = `<option value="">---</option>${optionMarkup}`;
+            if (findProject(current)) {
+                editSelect.value = current;
+            } else {
+                editSelect.value = '';
+                if (editTitle) editTitle.value = '';
+                if (editDescription) editDescription.value = '';
+                if (editImage) editImage.value = '';
+            }
+        }
+
+        if (deleteSelect) {
+            const current = deleteSelect.value;
+            deleteSelect.innerHTML = `<option value="">---</option>${optionMarkup}`;
+            deleteSelect.value = findProject(current) ? current : '';
+        }
+    };
+
+    const fillEditForm = (project) => {
+        if (!project) return;
+        if (editTitle) editTitle.value = project.title;
+        if (editDescription) editDescription.value = project.description;
+        if (editImage) editImage.value = project.image;
+    };
+
+    addForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        resetFeedback();
+        const newProject = {
+            id: addIdInput?.value.trim() || '',
+            title: addTitleInput?.value.trim() || '',
+            description: addDescriptionInput?.value.trim() || '',
+            image: addImageInput?.value.trim() || '',
+        };
+
+        if (!newProject.id || !newProject.title || !newProject.description || !newProject.image) {
+            showFeedback('Compila tutti i campi prima di salvare.', 'error');
+            return;
+        }
+
+        if (findProject(newProject.id)) {
+            showFeedback('Esiste già un progetto con questo slug.', 'error');
+            return;
+        }
+
+        projects = [newProject, ...projects];
+        addForm.reset();
+        renderProjects();
+        renderSelectOptions();
+        showFeedback('Progetto aggiunto correttamente.');
+    });
+
+    editSelect?.addEventListener('change', (event) => {
+        const id = event.target.value;
+        const project = findProject(id);
+        if (!project) {
+            if (editTitle) editTitle.value = '';
+            if (editDescription) editDescription.value = '';
+            if (editImage) editImage.value = '';
+            return;
+        }
+        fillEditForm(project);
+    });
+
+    editForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        resetFeedback();
+        const projectId = editSelect?.value;
+        if (!projectId) {
+            showFeedback('Seleziona un progetto da modificare.', 'error');
+            return;
+        }
+        const project = findProject(projectId);
+        if (!project) {
+            showFeedback('Progetto non trovato.', 'error');
+            return;
+        }
+
+        project.title = editTitle?.value.trim() || project.title;
+        project.description = editDescription?.value.trim() || project.description;
+        project.image = editImage?.value.trim() || project.image;
+
+        renderProjects();
+        renderSelectOptions();
+        showFeedback('Progetto aggiornato.');
+    });
+
+    deleteForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        resetFeedback();
+        const projectId = deleteSelect?.value;
+        if (!projectId) {
+            showFeedback('Scegli un progetto da eliminare.', 'error');
+            return;
+        }
+        projects = projects.filter((project) => project.id !== projectId);
+        renderProjects();
+        renderSelectOptions();
+        showFeedback('Progetto eliminato.');
+    });
+
+    projectsList?.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const actionButton = target.closest('[data-action]');
+        if (!actionButton) return;
+        const projectId = actionButton.dataset.projectId;
+        if (!projectId) return;
+
+        if (actionButton.dataset.action === 'prefill') {
+            if (editSelect) {
+                editSelect.value = projectId;
+                const project = findProject(projectId);
+                if (project) {
+                    fillEditForm(project);
+                }
+                editSelect.dispatchEvent(new Event('change'));
+                showFeedback('Progetto caricato nel form di modifica.');
+            }
+        }
+
+        if (actionButton.dataset.action === 'quick-delete') {
+            projects = projects.filter((project) => project.id !== projectId);
+            renderProjects();
+            renderSelectOptions();
+            showFeedback('Progetto eliminato.', 'success');
+        }
+    });
+
+    renderProjects();
+    renderSelectOptions();
+</script>
