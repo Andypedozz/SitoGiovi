@@ -1,21 +1,21 @@
 [
   {
-    "id": "1",
+    "id": 1,
     "title": "Pizzeria Roby's",
     "description": ""
   },
   {
-    "id": "2",
+    "id": 2,
     "title": "Gelateria Si Lo So",
     "description": ""
   },
   {
-    "id": "3",
+    "id": 3,
     "title": "Opia SS25",
     "description": ""
   },
   {
-    "id": "4",
+    "id": 4,
     "title": "Supermoto",
     "description": ""
   }

@@ -40,12 +40,16 @@ function getLastId(projects = []) {
 }
 
 export async function POST({ request }) {
-  const newProject = await request.json();
+  const { title, description } = await request.json();
   const projects = await readData();
 
-  const lastId = getLastId(projects)
-
-  newProject.id = lastId + 1;
+  const newId = getLastId(projects) + 1;
+  const newProject = {
+    id : newId,
+    title : title,
+    description : description
+  }
+  
   projects.push(newProject);
 
   await writeData(projects);
